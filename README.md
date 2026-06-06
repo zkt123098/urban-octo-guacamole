@@ -63,19 +63,21 @@ docker compose up -d
 将解压后的所有 .txt 文件放入 backend/raw_data/ 目录。
 ② 进入容器运行导入脚本：
 
-bash
+```bash
 docker compose exec yunshu bash
 cd /app/backend
 python import_data.py               # 导入气象文档
 python import_typhoon_data.py       # 导入台风轨迹数据
 python train_similarity_model.py    # 生成相似路径特征库
 exit
+```
 6.测试访问
 
 后端健康检查：
 
-bash
+```bash
 curl http://<服务器IP>:8000/
+```
 前端页面：浏览器打开 http://<服务器IP>:8000/frontend/index.html
 
 7.环境变量说明
@@ -90,8 +92,9 @@ FUXI_MODEL_DIR：伏羲模型路径（默认 /app/FuXi_EC）
 ADMIN_SECRET：管理接口密钥（默认 123456）
 
 8.停止与清理
-bash
+```bash
 docker compose down -v   # 停止并删除所有容器、网络和数据卷
+```
 🤝 致谢
 伏羲天气预报大模型：复旦大学
 
