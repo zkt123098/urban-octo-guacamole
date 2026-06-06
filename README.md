@@ -43,20 +43,20 @@
    ```bash
    git clone https://github.com/zkt123098/urban-octo-guacamole.git
    cd urban-octo-guacamole
-设置 API Key
+2.设置 API Key
 编辑 docker-compose.yml，将 DEEPSEEK_API_KEY: your_api_key_here 中的 your_api_key_here 替换为你的真实密钥。
 
-(可选) 准备伏羲模型
+3.准备伏羲模型
 如需使用伏羲强度预测，下载 FuXi_EC.zip（链接: https://pan.baidu.com/s/1w1ov00YhNiucjw9jbS3GNQ 提取码: futy），解压后将 FuXi_EC 文件夹放在项目根目录（与 docker-compose.yml 同级）。
 若未准备模型，系统会自动降级为本地模拟曲线，不影响其他功能。
 
-启动所有服务
+4.启动所有服务
 
-bash
+```bash
 docker compose up -d
 首次启动会自动构建镜像并拉取 MySQL。MySQL 数据会保存在 ./data/mysql 目录，Chroma 向量库保存在 ./data/chroma。
-
-导入初始数据
+```
+5.导入初始数据
 系统需要气象文档和台风轨迹数据才能正常问答。
 ① 下载 CMA 最佳路径数据集：
 链接: https://pan.baidu.com/s/1kg9LeV_92keS99xlGdBe3g 提取码: rfpm
@@ -70,7 +70,7 @@ python import_data.py               # 导入气象文档
 python import_typhoon_data.py       # 导入台风轨迹数据
 python train_similarity_model.py    # 生成相似路径特征库
 exit
-测试访问
+6.测试访问
 
 后端健康检查：
 
@@ -78,7 +78,7 @@ bash
 curl http://<服务器IP>:8000/
 前端页面：浏览器打开 http://<服务器IP>:8000/frontend/index.html
 
-环境变量说明
+7.环境变量说明
 所有可配置项均可在 docker-compose.yml 中修改：
 
 DEEPSEEK_API_KEY：你的 DeepSeek 密钥
@@ -89,7 +89,7 @@ FUXI_MODEL_DIR：伏羲模型路径（默认 /app/FuXi_EC）
 
 ADMIN_SECRET：管理接口密钥（默认 123456）
 
-停止与清理
+8.停止与清理
 bash
 docker compose down -v   # 停止并删除所有容器、网络和数据卷
 🤝 致谢
