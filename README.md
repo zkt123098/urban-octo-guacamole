@@ -97,9 +97,6 @@ docker compose down -v   # 停止并删除所有容器、网络和数据卷
 ```
 🤝 致谢
 伏羲天气预报大模型：复旦大学
-
 嵌入模型：BAAI/bge-small-zh (智源研究院)
-
 大语言模型：DeepSeek
-
 数据支持：中国气象局 (CMA) 最佳路径数据集
