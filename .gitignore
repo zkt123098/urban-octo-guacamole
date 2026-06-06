@@ -1,29 +1,40 @@
-# Python缓存
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
 
-# 虚拟环境
+# Virtual Environment
 .venv/
 env/
 venv/
 
-# 敏感配置
+# Sensitive Configuration
 .env
+!.env.example
 
-# 数据库/向量库持久化文件
+# Chroma Vector DB
 chroma_weather_index/
 
-# 模型缓存（大文件）
+# Model Cache
 model_cache/
 *.pkl
+*.h5
+*.pth
 
-# 大型数据集（按需保留或排除）
-raw_data/*.txt   # 如果你不想上传 txt 文件，取消注释；如果要上传则不加这行
+# Large Dataset (raw typhoon data)
+backend/raw_data/*.txt
+backend/raw_data/*.csv
 
-# 操作系统
+# Temporary Uploads
+temp_uploads/
+
+# OS
 .DS_Store
 Thumbs.db
 
-# 临时文件
-temp_uploads/
-*.tmp
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
