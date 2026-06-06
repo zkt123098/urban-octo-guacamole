@@ -49,11 +49,11 @@
 
 4.启动所有服务
 
-bash
+```bash
 docker compose up -d
 首次启动会自动构建镜像并拉取 MySQL。MySQL 数据会保存在 ./data/mysql 目录，Chroma 向量库保存在 ./data/chroma。
-
-导入初始数据
+```
+5.导入初始数据
 系统需要气象文档和台风轨迹数据才能正常问答。进入容器运行导入脚本：
 ```bash
 docker compose exec yunshu bash
@@ -63,11 +63,11 @@ python import_typhoon_data.py       # 导入台风轨迹数据
 python train_similarity_model.py    # 生成相似路径特征库
 exit
 ```
-测试访问
+6.测试访问
 后端健康检查：curl http://<服务器IP>:8000/
 前端页面：浏览器打开 http://<服务器IP>:8000/frontend/index.html
 
-环境变量说明
+7.环境变量说明
 所有可配置项均可在 docker-compose.yml 中修改：
 DEEPSEEK_API_KEY：你的 DeepSeek 密钥
 MYSQL_HOST、MYSQL_USER、MYSQL_PASSWORD、MYSQL_DB：数据库连接信息
