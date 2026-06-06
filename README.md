@@ -29,25 +29,46 @@
 
 ---
 
-## 📦 快速开始 (Docker 部署)
+## 🐳 Docker 部署 (Linux 服务器)
 
-### 1. 克隆仓库
+### 前置要求
+- 安装 Docker 和 Docker Compose
+- 获取 DeepSeek API Key（免费注册 https://platform.deepseek.com/）
+
+### 部署步骤
+
+1. **克隆仓库**
+   ```bash
+   git clone https://github.com/zkt123098/urban-octo-guacamole.git
+   cd urban-octo-guacamole
+ 2. 设置 API Key
+编辑 docker-compose.yml，将 DEEPSEEK_API_KEY: your_api_key_here 中的 your_api_key_here 替换为你的真实密钥。
+
+3.准备伏羲模型
+如需使用伏羲强度预测，下载 [FuXi_EC.zip](https://pan.baidu.com/s/1w1ov00YhNiucjw9jbS3GNQ 提取码: futy)，解压后将 FuXi_EC 文件夹放在项目根目录（与 docker-compose.yml 同级）。
+
+4.启动所有服务
+
+bash
+docker compose up -d
+首次启动会自动构建镜像并拉取 MySQL。MySQL 数据会保存在 ./data/mysql 目录，Chroma 向量库保存在 ./data/chroma。
+
+导入初始数据
+系统需要气象文档和台风轨迹数据才能正常问答。进入容器运行导入脚本：
 ```bash
-git clone https://github.com/zkt123098/urban-octo-guacamole.git
-cd urban-octo-guacamole
+docker compose exec yunshu bash
+cd /app/backend
+python import_data.py               # 导入气象文档
+python import_typhoon_data.py       # 导入台风轨迹数据
+python train_similarity_model.py    # 生成相似路径特征库
+exit
 ```
-### 2. 配置环境变量
-```bash
-cp backend/.env.example backend/.env
-# 编辑 backend/.env，填入你的 DeepSeek API Key 和 MySQL 信息
-```
-### 3.  下载伏羲模型文件
-```bash
-从百度网盘下载 FuXi_EC.zip：🔗 [下载链接](https://pan.baidu.com/s/1w1ov00YhNiucjw9jbS3GNQ 提取码: futy)
-解压后将 FuXi_EC 文件夹放到 D:\fuxi\FuXi_EC（Windows 路径）。
-若希望在其他路径放置模型，请修改 backend/fuxi_server_win.py 中的 MODEL_DIR 变量。
-```
-4. 启动服务
-```bash
- docker compose up -d
-```
+测试访问
+后端健康检查：curl http://<服务器IP>:8000/
+前端页面：浏览器打开 http://<服务器IP>:8000/frontend/index.html
+
+环境变量说明
+所有可配置项均可在 docker-compose.yml 中修改：
+DEEPSEEK_API_KEY：你的 DeepSeek 密钥
+MYSQL_HOST、MYSQL_USER、MYSQL_PASSWORD、MYSQL_DB：数据库连接信息
+FUXI_MODEL_DIR：伏羲模型路径（默认 /app/FuXi_EC）
