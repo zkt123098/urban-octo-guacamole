@@ -1,0 +1,11 @@
+version: '3'
+services:
+  yunshu:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/.env:/app/backend/.env   # 挂载 .env 文件
+      # 如果需要持久化 Chroma 索引，取消注释下面一行
+      # - ./data/chroma:/app/backend/chroma_weather_index
+    restart: unless-stopped
