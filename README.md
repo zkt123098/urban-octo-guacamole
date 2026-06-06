@@ -1,6 +1,7 @@
 # ☁️ 云舒 · 气象台风智能问答系统
-（期末大作业）
-基于 **RAG (检索增强生成)** 的台风与气象智能问答助手，集成 **伏羲气象大模型** 与 **历史相似路径预测**，提供自然语言交互的天气与台风查询、频次预测、强度曲线及路径地图生成。
+
+> **期末大作业**  
+> 基于 RAG (检索增强生成) 的台风与气象智能问答助手，集成 **伏羲气象大模型** 与 **历史相似路径预测**，提供自然语言交互的天气与台风查询、频次预测、强度曲线及路径地图生成。
 
 ---
 
@@ -10,7 +11,8 @@
 |------|------|
 | 💬 **智能问答** | 基于气象知识库与历史台风数据库，回答“上海2022年天气”、“台风山竹的路径”等问题。 |
 | 📈 **台风预测** | 基于 Prophet 时间序列模型的年度台风频次趋势预测。 |
-| 🗺️ **路径预测** | 上传内置坐标的 NetCDF 文件或手动输入轨迹点，生成相似台风路径地图。 | 调用本地部署的伏羲大模型，根据气象初始场文件实时生成台风强度预测曲线。 |
+| 🗺️ **路径预测** | 上传内置坐标的 NetCDF 文件或手动输入轨迹点，生成相似台风路径地图。 |
+| 🌪️ **伏羲强度预测** | 调用本地部署的伏羲大模型，根据气象初始场文件实时生成台风强度预测曲线。 |
 
 ---
 
@@ -33,7 +35,7 @@
 
 ### 前置要求
 - 安装 Docker 和 Docker Compose
-- 获取 DeepSeek API Key（免费注册 https://platform.deepseek.com/）
+- 获取 DeepSeek API Key（免费注册：https://platform.deepseek.com/）
 
 ### 部署步骤
 
@@ -41,34 +43,60 @@
    ```bash
    git clone https://github.com/zkt123098/urban-octo-guacamole.git
    cd urban-octo-guacamole
- 2. 设置 API Key
+设置 API Key
 编辑 docker-compose.yml，将 DEEPSEEK_API_KEY: your_api_key_here 中的 your_api_key_here 替换为你的真实密钥。
 
-3.准备伏羲模型
-如需使用伏羲强度预测，下载 [FuXi_EC.zip](https://pan.baidu.com/s/1w1ov00YhNiucjw9jbS3GNQ 提取码: futy)，解压后将 FuXi_EC 文件夹放在项目根目录（与 docker-compose.yml 同级）。
+(可选) 准备伏羲模型
+如需使用伏羲强度预测，下载 FuXi_EC.zip（链接: https://pan.baidu.com/s/1w1ov00YhNiucjw9jbS3GNQ 提取码: futy），解压后将 FuXi_EC 文件夹放在项目根目录（与 docker-compose.yml 同级）。
+若未准备模型，系统会自动降级为本地模拟曲线，不影响其他功能。
 
-4.启动所有服务
+启动所有服务
 
-```bash
+bash
 docker compose up -d
 首次启动会自动构建镜像并拉取 MySQL。MySQL 数据会保存在 ./data/mysql 目录，Chroma 向量库保存在 ./data/chroma。
-```
-5.导入初始数据
-系统需要气象文档和台风轨迹数据才能正常问答。进入容器运行导入脚本：
-```bash
+
+导入初始数据
+系统需要气象文档和台风轨迹数据才能正常问答。
+① 下载 CMA 最佳路径数据集：
+链接: https://pan.baidu.com/s/1kg9LeV_92keS99xlGdBe3g 提取码: rfpm
+将解压后的所有 .txt 文件放入 backend/raw_data/ 目录。
+② 进入容器运行导入脚本：
+
+bash
 docker compose exec yunshu bash
 cd /app/backend
 python import_data.py               # 导入气象文档
 python import_typhoon_data.py       # 导入台风轨迹数据
 python train_similarity_model.py    # 生成相似路径特征库
 exit
-```
-6.测试访问
-后端健康检查：curl http://<服务器IP>:8000/
+测试访问
+
+后端健康检查：
+
+bash
+curl http://<服务器IP>:8000/
 前端页面：浏览器打开 http://<服务器IP>:8000/frontend/index.html
 
-7.环境变量说明
+环境变量说明
 所有可配置项均可在 docker-compose.yml 中修改：
+
 DEEPSEEK_API_KEY：你的 DeepSeek 密钥
+
 MYSQL_HOST、MYSQL_USER、MYSQL_PASSWORD、MYSQL_DB：数据库连接信息
+
 FUXI_MODEL_DIR：伏羲模型路径（默认 /app/FuXi_EC）
+
+ADMIN_SECRET：管理接口密钥（默认 123456）
+
+停止与清理
+bash
+docker compose down -v   # 停止并删除所有容器、网络和数据卷
+🤝 致谢
+伏羲天气预报大模型：复旦大学
+
+嵌入模型：BAAI/bge-small-zh (智源研究院)
+
+大语言模型：DeepSeek
+
+数据支持：中国气象局 (CMA) 最佳路径数据集
