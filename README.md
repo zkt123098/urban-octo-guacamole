@@ -35,9 +35,19 @@
 ```bash
 git clone https://github.com/zkt123098/urban-octo-guacamole.git
 cd urban-octo-guacamole
-
+```
 ### 2. 配置环境变量
+```bash
 cp backend/.env.example backend/.env
 # 编辑 backend/.env，填入你的 DeepSeek API Key 和 MySQL 信息
-
-
+```
+### 3.  下载伏羲模型文件
+```bash
+从百度网盘下载 FuXi_EC.zip：🔗 下载链接
+解压后将 FuXi_EC 文件夹放到 D:\fuxi\FuXi_EC（Windows 路径）。
+若希望在其他路径放置模型，请修改 backend/fuxi_server_win.py 中的 MODEL_DIR 变量。
+```
+4. 启动服务
+```bash
+ docker compose up -d
+```
