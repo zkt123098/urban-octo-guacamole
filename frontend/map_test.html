@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>台风路径预测（备用测试页）</title>
+</head>
+<body>
+    <h2>🗺️ 台风路径预测</h2>
+    <textarea id="track" rows="6" cols="45">12.6,165.9
+13.0,164.5
+13.5,163.0
+14.0,161.5
+14.5,160.0
+15.0,158.5</textarea><br><br>
+    <button onclick="predict()" style="padding:10px 20px; font-size:16px;">生成预测地图</button>
+    <div id="result" style="margin-top:20px;"></div>
+
+    <script>
+        async function predict() {
+            const track = document.getElementById('track').value.trim();
+            if (!track) return;
+            const formData = new FormData();
+            formData.append('track', track);
+            document.getElementById('result').innerText = '⏳ 正在生成地图，请稍候...';
+            try {
+                const res = await fetch('http://127.0.0.1:8000/api/typhoon/map_predict', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.code === 200) {
+                    document.getElementById('result').innerHTML =
+                        '<p><strong>云舒播报：</strong>' + data.data.answer + '</p>' +
+                        '<img src="data:image/png;base64,' + data.data.map_base64 + '" style="max-width:100%; border:1px solid #ccc;"/>';
+                } else {
+                    document.getElementById('result').innerText = '预测失败：' + data.msg;
+                }
+            } catch (err) {
+                document.getElementById('result').innerText = '网络或服务器错误：' + err.message;
+            }
+        }
+    </script>
+</body>
+</html>
