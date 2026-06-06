@@ -1,7 +1,5 @@
-# 使用轻量级 Python 3.10 镜像
 FROM python:3.10-slim
 
-# 设置工作目录
 WORKDIR /app
 
 # 复制后端代码
@@ -15,5 +13,8 @@ RUN pip install --no-cache-dir -r /app/backend/requirements.txt
 # 暴露端口
 EXPOSE 8000
 
-# 启动命令
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# 使用 shell 脚本同时启动 FastAPI 和伏羲服务（如果模型存在）
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+CMD ["/app/entrypoint.sh"]
