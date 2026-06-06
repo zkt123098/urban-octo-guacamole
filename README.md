@@ -35,3 +35,9 @@
 ```bash
 git clone https://github.com/zkt123098/urban-octo-guacamole.git
 cd urban-octo-guacamole
+
+### 2. 配置环境变量
+cp backend/.env.example backend/.env
+# 编辑 backend/.env，填入你的 DeepSeek API Key 和 MySQL 信息
+
+
