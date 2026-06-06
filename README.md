@@ -43,7 +43,7 @@ cp backend/.env.example backend/.env
 ```
 ### 3.  下载伏羲模型文件
 ```bash
-从百度网盘下载 FuXi_EC.zip：🔗 下载链接
+从百度网盘下载 FuXi_EC.zip：🔗 [下载链接](https://pan.baidu.com/s/1w1ov00YhNiucjw9jbS3GNQ 提取码: futy)
 解压后将 FuXi_EC 文件夹放到 D:\fuxi\FuXi_EC（Windows 路径）。
 若希望在其他路径放置模型，请修改 backend/fuxi_server_win.py 中的 MODEL_DIR 变量。
 ```
