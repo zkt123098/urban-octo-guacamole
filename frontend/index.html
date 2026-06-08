@@ -153,7 +153,7 @@
                     await scrollToBottom();
                     isLoading.value = true;
                     try {
-                        const resp = await axios.post('http://127.0.0.1:8000/api/query', {
+                        const resp = await axios.post('/api/query', {
                             question: question,
                             type: mode.value
                         }, { timeout: 30000 });
@@ -181,7 +181,7 @@
                         trackInput.value = '';
                         await scrollToBottom();
                         try {
-                            const resp = await axios.post('http://127.0.0.1:8000/api/typhoon/fuxi_demo', formData, {
+                            const resp = await axios.post('/api/typhoon/fuxi_demo', formData, {
                                 timeout: 120000,
                                 headers: { 'Content-Type': 'multipart/form-data' }
                             });
@@ -233,7 +233,7 @@
                     try {
                         const formData = new FormData();
                         formData.append('track', track);
-                        const resp = await axios.post('http://127.0.0.1:8000/api/typhoon/map_predict', formData, {
+                        const resp = await axios.post('/api/typhoon/map_predict', formData, {
                             timeout: 60000,
                             headers: { 'Content-Type': 'multipart/form-data' }
                         });

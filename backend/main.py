@@ -9,6 +9,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 from fastapi import FastAPI, Form
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
@@ -43,7 +44,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"]
 )
-
+# 挂载静态文件目录（用于前端 HTML）
+app.mount("/frontend", StaticFiles(directory="/app/frontend", html=True), name="frontend")
 EMBEDDING_MODEL = "BAAI/bge-small-zh"
 PERSIST_DIRECTORY = "./chroma_weather_index"
 
