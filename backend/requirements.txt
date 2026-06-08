@@ -25,3 +25,4 @@ python-multipart
 matplotlib
 cartopy
 scikit-learn
+aiofiles
