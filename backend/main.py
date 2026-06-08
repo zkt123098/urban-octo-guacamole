@@ -12,6 +12,7 @@ from fastapi import FastAPI, Form
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
+from pathlib import Path
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import mysql.connector
@@ -45,7 +46,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"]
 )
-app.mount("/frontend", StaticFiles(directory="/app/frontend", html=True), name="frontend")
+frontend_dir = Path(__file__).parent.parent / "frontend"
+app.mount("/frontend", StaticFiles(directory=str(frontend_dir), html=True), name="frontend")
 EMBEDDING_MODEL = "BAAI/bge-small-zh"
 PERSIST_DIRECTORY = "./chroma_weather_index"
 
