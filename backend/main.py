@@ -9,6 +9,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 from fastapi import FastAPI, Form
+from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
@@ -655,4 +656,4 @@ async def fuxi_demo(file: UploadFile = File(...)):
             os.unlink(input_path)
 @app.get("/")
 def home():
-    return {"message": "云舒已经准备好啦，来问我天气吧！"}
+    return RedirectResponse(url="/frontend/index.html")
