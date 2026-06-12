@@ -154,7 +154,7 @@ docker compose restart yunshu
 
 更新代码后重建：修改代码后，执行 docker compose build（利用缓存，很快），然后 docker compose up -d --force-recreate
 
-十、补充(如需路径预测功能):将伏羲模型文件上传到服务器
+十、补充(如需路径预测功能):将伏羲模型文件上传到服务器(可能需要磁盘有十多G空间)
 使用 SCP 或 SFTP 将整个 FuXi_EC 文件夹上传到服务器上，例如放在 /home/用户名/FuXi_EC（与 docker-compose.yml 同级目录更好）。
 
 3. 修改 docker-compose.yml，挂载模型目录
