@@ -35,62 +35,78 @@
 一、准备工作
 Linux 服务器（如 Ubuntu 20.04/22.04），确保已安装 Docker 和 Docker Compose。
 
-bash
+~~~bash
 # 安装 Docker（如果未安装）
 curl -fsSL https://get.docker.com | bash
 sudo usermod -aG docker $USER
 newgrp docker
 DeepSeek API Key：前往 platform.deepseek.com 注册并获取 sk- 开头的密钥。
-
+~~~
 （可选）伏羲模型文件：如果需要强度预测功能，下载 FuXi_EC 文件夹并放置在服务器上（本教程默认跳过，不影响核心问答功能）。
 
 （可选）CMA 台风数据：如果需要历史台风查询功能，需下载原始数据文件（.txt）并导入，后面会详细说明。
 
 二、获取项目代码
-bash
+~~~bash
 git clone https://github.com/zkt123098/urban-octo-guacamole.git
 cd urban-octo-guacamole
+~~~
 三、配置环境变量
 复制模板文件：
 
-bash
+~~~bash
 cp backend/.env.example backend/.env
 编辑 .env，至少填写你的 DeepSeek API Key：
-
-bash
+~~~
+~~~bash
 nano backend/.env
 将 DEEPSEEK_API_KEY=your_api_key_here 修改为你的真实密钥，例如：
-
-text
+~~~
+~~~text
 DEEPSEEK_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 其他数据库配置保持默认即可。
-
+~~~
 四、设置后端服务 IP 地址
 项目默认使用 192.168.18.4 作为后端 IP，你需要修改为你的 Linux 服务器实际 IP。
 
-查看服务器 IP：
-
-bash
+🌐 1. 查看当前服务器 IP
+~~~bash
 ip addr show | grep 'inet ' | grep -v '127.0.0.1'
-假设输出 192.168.1.100，则你的服务器 IP 就是它。
+输出类似 192.168.1.100，这就是服务器 IP。
+~~~
+📝 2. 修改配置文件
+编辑 docker-compose.yml：
 
-编辑 docker-compose.yml，找到 BACKEND_HOST 那一行，将 IP 修改为你的真实 IP：
+~~~bash
+nano docker-compose.yml
+找到这一行：
 
 yaml
-BACKEND_HOST: "192.168.1.100"
+      BACKEND_HOST: "192.168.18.4"
+将 192.168.18.4 改为上一步查到的真实 IP。
+
+保存退出：Ctrl+O → Enter → Ctrl+X。
+~~~
+🚀 3. 重启容器使配置生效
+~~~bash
+docker compose up -d --force-recreate
+等待 10 秒左右，服务就更新完毕。
+~~~
+🧪 4. 验证
+浏览器访问 http://新IP:8000，应该能正常打开前端页面并回答问题。
 五、启动服务
-bash
+~~~bash
 docker compose up -d
 首次启动会自动拉取基础镜像并构建应用镜像，需要耐心等待几分钟。完成后会自动启动 MySQL 数据库和云舒后端服务。
-
+~~~
 六、验证基础运行
-bash
+~~~bash
 curl http://localhost:8000/
 如果返回 {"message":"云舒已经准备好啦，来问我天气吧！"}，说明后端启动成功。
-
+~~~
 浏览器访问 http://你的服务器IP:8000 应该能看到前端聊天界面。
 
-七、导入历史台风数据（可选，但推荐）
+七、导入历史台风数据
 如果需要查询真实台风信息，必须导入 CMA 最佳路径数据集。
 
 下载数据文件压缩包（链接: https://pan.baidu.com/s/1kg9LeV_92keS99xlGdBe3g 提取码: rfpm），解压后得到 77 个 .txt 文件和一个 typhoon_names.csv。
@@ -99,20 +115,22 @@ curl http://localhost:8000/
 
 进入容器并运行导入脚本：
 
-bash
+~~~bash
 docker compose exec yunshu bash
 cd /app/backend
 python import_data.py               # 导入气象文档（100条）
 python import_typhoon_data.py       # 导入台风轨迹（1949-2025年）
 python train_similarity_model.py    # 生成相似路径特征库
 exit
+~~~
 整个过程可能需要 3-5 分钟，请耐心等待。
 
 导入完成后，重建向量索引：
 
-bash
+~~~bash
 docker compose exec yunshu rm -rf /app/backend/chroma_weather_index
 docker compose restart yunshu
+~~~
 八、测试完整功能
 在浏览器中强制刷新页面（Ctrl+Shift+R），依次测试：
 
@@ -122,7 +140,7 @@ docker compose restart yunshu
 
 台风预测：选择“台风预测”模式，输入“明年台风多吗？”
 
-路径预测：选择“路径预测”模式，上传一个 .nc 文件（或输入6行坐标），按 Enter 生成路径地图和强度曲线。
+路径预测：需要伏羲大模型,但我电脑磁盘爆满无法测试所以这一块功能就没了.
 
 九、停止与重启
 停止服务：docker compose down
