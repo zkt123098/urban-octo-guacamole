@@ -140,7 +140,12 @@ docker compose restart yunshu
 
 台风预测：选择“台风预测”模式，输入“明年台风多吗？”
 
-路径预测：需要伏羲大模型,但我电脑磁盘爆满无法在虚拟机部署测试.所以这一块功能就没了.
+路径预测：读取.nc台风数据文件需要伏羲大模型,但我电脑磁盘爆满无法在虚拟机部署测试.所以这一块功能就没了.
+
+伏羲大模型下载链接
+文件：FuXi_EC.zip
+百度网盘链接：https://pan.baidu.com/s/1w1ov00YhNiucjw9jbS3GNQ
+提取码：futy
 
 九、停止与重启
 停止服务：docker compose down
@@ -149,3 +154,22 @@ docker compose restart yunshu
 
 更新代码后重建：修改代码后，执行 docker compose build（利用缓存，很快），然后 docker compose up -d --force-recreate
 
+补充(如需路径预测功能):将伏羲模型文件上传到服务器
+使用 SCP 或 SFTP 将整个 FuXi_EC 文件夹上传到服务器上，例如放在 /home/用户名/FuXi_EC（与 docker-compose.yml 同级目录更好）。
+
+3. 修改 docker-compose.yml，挂载模型目录
+编辑 docker-compose.yml，找到 yunshu 服务的 volumes 部分，添加一行（如果已有则取消注释）：
+
+yaml
+    volumes:
+      - ./FuXi_EC:/app/FuXi_EC
+确保冒号前面的路径指向你存放 FuXi_EC 的位置（相对路径或绝对路径均可）。
+
+4. 重启容器
+bash
+docker compose down
+docker compose up -d --force-recreate
+容器启动时会自动检测 /app/FuXi_EC/short.onnx 是否存在，若存在则自动启动伏羲推理服务。
+
+5. 测试
+在前端“路径预测”模式下，选择一个 .nc 文件上传，按 Enter，即可看到伏羲强度预测曲线图。
