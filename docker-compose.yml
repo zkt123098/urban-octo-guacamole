@@ -6,26 +6,22 @@ services:
     ports:
       - "8000:8000"
     environment:
-      # 数据库配置（使用 compose 内的 MySQL 服务）
       MYSQL_HOST: mysql
       MYSQL_PORT: 3306
       MYSQL_USER: root
       MYSQL_PASSWORD: yunshu123
       MYSQL_DB: weather_db
-      # DeepSeek API Key（请在这里填写或通过 .env 文件传入）
-      DEEPSEEK_API_KEY: your_api_key_here
+      DEEPSEEK_API_KEY: "${DEEPSEEK_API_KEY:-sk-b983565e09174938ba5f02779435e60b}"
       DEEPSEEK_BASE_URL: https://api.deepseek.com
-      # 模型路径（如果挂载了模型）
       FUXI_MODEL_DIR: /app/FuXi_EC
-      # 管理员密钥
-      ADMIN_SECRET: 123456
-      # HuggingFace 离线模式（启动时会自动下载所需模型，第一次需联网）
-      HF_HUB_OFFLINE: 0
+      ADMIN_SECRET: "123456"
+      HF_HUB_OFFLINE: "1"
+      TRANSFORMERS_OFFLINE: "1"
+      BACKEND_HOST: "192.168.18.4"   # 老师需要改成自己的服务器IP
     volumes:
-      # 挂载模型文件夹（可选，如果老师有模型文件，可以放在 ./FuXi_EC 目录）
-      - ./FuXi_EC:/app/FuXi_EC
-      # 持久化 Chroma 向量库（避免每次重启重建）
+      - ./FuXi_EC:/app/FuXi_EC                         # 伏羲模型（可选）
       - ./data/chroma:/app/backend/chroma_weather_index
+      - /root/.cache/huggingface:/root/.cache/huggingface   # 模型缓存挂载
     depends_on:
       mysql:
         condition: service_healthy
@@ -38,8 +34,6 @@ services:
       MYSQL_DATABASE: weather_db
     volumes:
       - ./data/mysql:/var/lib/mysql
-      # 可选的初始化 SQL 文件（如果需要自动导入数据，可以放入 init.sql）
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "3306:3306"
     healthcheck:
