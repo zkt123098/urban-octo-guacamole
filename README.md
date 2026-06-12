@@ -174,7 +174,7 @@ docker compose up -d --force-recreate
 5. 测试
 在前端“路径预测”模式下，选择一个 .nc 文件上传，按 Enter，即可看到伏羲强度预测曲线图。
 
-十一、个人docker部署时遇到的问题以及解决方法
+十一、本人自己docker部署时遇到的问题以及解决方法
 
 Q: 启动后浏览器显示“网络错误”
 A: 最常见的原因是 docker-compose.yml 中的 BACKEND_HOST 与实际服务器 IP 不一致。请执行 ip addr 查看 IP，修改对应配置，然后 docker compose up -d --force-recreate。
