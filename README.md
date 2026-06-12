@@ -42,9 +42,9 @@ sudo usermod -aG docker $USER
 newgrp docker
 DeepSeek API Key：前往 platform.deepseek.com 注册并获取 sk- 开头的密钥。
 ~~~
-（可选）伏羲模型文件：如果需要强度预测功能，下载 FuXi_EC 文件夹并放置在服务器上（本教程默认跳过，不影响核心问答功能）。
+（可选）伏羲模型文件：如果需要强度预测功能，下载 FuXi_EC 文件夹并放置在服务器上（本教程默认跳过，不影响RAG核心问答功能）。
 
-（可选）CMA 台风数据：如果需要历史台风查询功能，需下载原始数据文件（.txt）并导入，后面会详细说明。
+CMA 台风数据：如果需要历史台风查询功能，需下载原始数据文件（.txt）并导入自己MySQL数据库，后面会详细说明。
 
 二、获取项目代码
 ~~~bash
@@ -106,7 +106,7 @@ curl http://localhost:8000/
 ~~~
 浏览器访问 http://你的服务器IP:8000 应该能看到前端聊天界面。
 
-七、导入历史台风数据
+七、导入历史台风数据(相似路径特征库train_similarity_model.py我docker里好像有了?不确定)
 如果需要查询真实台风信息，必须导入 CMA 最佳路径数据集。
 
 下载数据文件压缩包（链接: https://pan.baidu.com/s/1kg9LeV_92keS99xlGdBe3g 提取码: rfpm），解压后得到 77 个 .txt 文件和一个 typhoon_names.csv。
@@ -118,7 +118,7 @@ curl http://localhost:8000/
 ~~~bash
 docker compose exec yunshu bash
 cd /app/backend
-python import_data.py               # 导入气象文档（100条）
+python import_data.py               # 导入气象文档（这里偷懒了,只有100条）
 python import_typhoon_data.py       # 导入台风轨迹（1949-2025年）
 python train_similarity_model.py    # 生成相似路径特征库
 exit
@@ -154,7 +154,7 @@ docker compose restart yunshu
 
 更新代码后重建：修改代码后，执行 docker compose build（利用缓存，很快），然后 docker compose up -d --force-recreate
 
-补充(如需路径预测功能):将伏羲模型文件上传到服务器
+十、补充(如需路径预测功能):将伏羲模型文件上传到服务器
 使用 SCP 或 SFTP 将整个 FuXi_EC 文件夹上传到服务器上，例如放在 /home/用户名/FuXi_EC（与 docker-compose.yml 同级目录更好）。
 
 3. 修改 docker-compose.yml，挂载模型目录
@@ -166,10 +166,10 @@ yaml
 确保冒号前面的路径指向你存放 FuXi_EC 的位置（相对路径或绝对路径均可）。
 
 4. 重启容器
-bash
+~~~bash
 docker compose down
 docker compose up -d --force-recreate
 容器启动时会自动检测 /app/FuXi_EC/short.onnx 是否存在，若存在则自动启动伏羲推理服务。
-
+~~~
 5. 测试
 在前端“路径预测”模式下，选择一个 .nc 文件上传，按 Enter，即可看到伏羲强度预测曲线图。
