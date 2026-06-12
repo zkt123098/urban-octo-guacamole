@@ -173,3 +173,26 @@ docker compose up -d --force-recreate
 ~~~
 5. 测试
 在前端“路径预测”模式下，选择一个 .nc 文件上传，按 Enter，即可看到伏羲强度预测曲线图。
+
+十一、个人docker部署时遇到的问题以及解决方法
+
+Q: 启动后浏览器显示“网络错误”
+A: 最常见的原因是 docker-compose.yml 中的 BACKEND_HOST 与实际服务器 IP 不一致。请执行 ip addr 查看 IP，修改对应配置，然后 docker compose up -d --force-recreate。
+
+Q: 页面加载了，但提问时提示 API Key 无效
+A: 检查 docker-compose.yml 中的 DEEPSEEK_API_KEY 是否正确，或编辑 backend/.env 文件，然后重启容器。
+
+Q: 查询台风时提示“表不存在”
+A: 说明尚未导入历史数据。请按照文档中的“导入历史台风数据”章节上传数据并运行导入脚本。
+
+Q: 上传 .nc 文件预测失败（连接拒绝或超时）
+A: 伏羲模型文件未挂载。系统会自动降级为本地模拟曲线，路径预测不受影响。若需启用伏羲预测，请下载 FuXi_EC 并挂载到容器内。
+
+Q: 启动时卡住或报磁盘空间不足
+A: 确保 Docker 数据分区有足够空间（建议 >20GB）。可执行 docker system prune -a 清理无用镜像和缓存。
+
+Q: 访问 http://IP:8000 只显示 JSON 信息
+A: 请使用完整路径 http://IP:8000/frontend/index.html，或等待几秒后刷新（首次启动时服务可能尚未完全就绪）。
+
+Q: 如何修改 DeepSeek API Key？
+A: 编辑 backend/.env 文件，更新密钥后执行 docker compose restart。
